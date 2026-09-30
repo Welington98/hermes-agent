@@ -1,0 +1,26 @@
+services:
+  hermes:
+    image: nousresearch/hermes-agent:latest
+    container_name: hermes
+    restart: unless-stopped
+    command: gateway run
+    shm_size: "1g" # required for Playwright/Chromium browser automation
+    ports:
+      - "8642:8642" # OpenAI-compatible API server + health endpoint
+      - "9119:9119" # web dashboard
+    volumes:
+      - ./hermes-data:/opt/data
+    environment:
+      HERMES_DASHBOARD: "1"
+      HERMES_DASHBOARD_HOST: "0.0.0.0"
+      HERMES_DASHBOARD_PORT: "9119"
+      API_SERVER_ENABLED: "true"
+      API_SERVER_HOST: "0.0.0.0"
+      API_SERVER_KEY: "${API_SERVER_KEY}"
+      PUID: "${PUID:-1000}"
+      PGID: "${PGID:-1000}"
+    deploy:
+      resources:
+        limits:
+          memory: 4G
+          cpus: "2.0"
