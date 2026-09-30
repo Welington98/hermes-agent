@@ -22,6 +22,9 @@ cp .env.example .env
 Edit `.env` and set:
 - `API_SERVER_KEY` — generate with `openssl rand -hex 32` (minimum 8 characters)
 - `PUID` / `PGID` — match your host user (`id -u` / `id -g`) to avoid permission errors on the mounted volume
+- `HERMES_DASHBOARD_BASIC_AUTH_USERNAME` / `PASSWORD` / `SECRET` — required because the dashboard is bound to `0.0.0.0`; Hermes refuses to start on a non-loopback bind without an auth provider. Generate the secret with `openssl rand -hex 32`.
+
+> For OAuth (Nous Portal) or self-hosted OIDC instead of basic auth, see the [Docker guide](https://hermes-agent.nousresearch.com/docs/user-guide/docker) and set `HERMES_DASHBOARD_OAUTH_CLIENT_ID` or `HERMES_DASHBOARD_OIDC_ISSUER` + `HERMES_DASHBOARD_OIDC_CLIENT_ID` instead.
 
 ## Run
 
