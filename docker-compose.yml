@@ -1,13 +1,18 @@
 services:
   hermes:
-    image: nousresearch/hermes-agent:latest
+    build:
+      context: .
+      args:
+        # Pin a release tag in production, e.g. nousresearch/hermes-agent:v0.22.5
+        HERMES_BASE: ${HERMES_BASE:-nousresearch/hermes-agent:latest}
+    image: hermes-agent-desktop:local
     container_name: hermes
     restart: unless-stopped
     command: gateway run
     shm_size: "1g" # required for Playwright/Chromium browser automation
     ports:
       - "8642:8642" # OpenAI-compatible API server + health endpoint
-      - "9119:9119" # web dashboard
+      - "9119:9119" # web dashboard (includes the Bot Desktop / Screen pane)
     volumes:
       - ./hermes-data:/opt/data
     environment:
@@ -27,5 +32,6 @@ services:
     deploy:
       resources:
         limits:
+          # The Xfce desktop adds ~220 MiB when running (Xvnc + xfwm4 + panel).
           memory: 4G
           cpus: "2.0"
