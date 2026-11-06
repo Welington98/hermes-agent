@@ -131,4 +131,9 @@ rclone config
 # 0 3 * * * HERMES_CONTAINER=hermes /caminho/hermes-agent/scripts/backup-hermes-host.sh >> $HOME/.cache/hermes-backup/cron.log 2>&1
 ```
 
-Variáveis: `HERMES_CONTAINER` (padrão `hermes`), `RCLONE_REMOTE` (padrão `gdrive-crypt:hermes-backup`), `STAGE_DIR`, `KEEP_LOCAL` (3), `KEEP_REMOTE_DAYS` (14).
+Retenção:
+- **Remota (GFS):** mantém o backup mais recente de cada um dos últimos `KEEP_DAILY` dias (7), `KEEP_WEEKLY` semanas ISO (4) e `KEEP_MONTHLY` meses (6). Só mexe em arquivos `hermes-backup-YYYYMMDD-HHMMSS.zip`.
+- **Local:** mantém os `KEEP_LOCAL` zips mais recentes (3) em `STAGE_DIR`.
+- Só aplicar retenção: `./scripts/backup-hermes-host.sh --prune-only`. Simular antes: `DRY_RUN=1 ./scripts/backup-hermes-host.sh --prune-only`.
+
+Variáveis: `HERMES_CONTAINER` (padrão `hermes`), `RCLONE_REMOTE` (padrão `gdrive-crypt:hermes-backup`), `STAGE_DIR`, `KEEP_LOCAL`, `KEEP_DAILY`, `KEEP_WEEKLY`, `KEEP_MONTHLY`, `DRY_RUN`.
