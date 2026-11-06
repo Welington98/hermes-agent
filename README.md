@@ -115,3 +115,20 @@ docker run -it --rm \
   -v "$(pwd)/hermes-data:/opt/data" \
   nousresearch/hermes-agent
 ```
+
+## Backup (host + rclone → Google Drive)
+
+`scripts/backup-hermes-host.sh` roda no **host** (não no container): gera o backup com `hermes backup` dentro do container `hermes`, copia o zip para o host, valida, envia para um remote `rclone crypt` e aplica retenção.
+
+Pré-requisitos no host: `docker` (usuário no grupo `docker`), `rclone` com um remote `crypt` apontando para `drive`, `python3`.
+
+```bash
+# uma vez: crie os remotes (gdrive = drive, gdrive-crypt = crypt sobre gdrive)
+rclone config
+# teste manual
+./scripts/backup-hermes-host.sh
+# cron diário às 03:00
+# 0 3 * * * HERMES_CONTAINER=hermes /caminho/hermes-agent/scripts/backup-hermes-host.sh >> $HOME/.cache/hermes-backup/cron.log 2>&1
+```
+
+Variáveis: `HERMES_CONTAINER` (padrão `hermes`), `RCLONE_REMOTE` (padrão `gdrive-crypt:hermes-backup`), `STAGE_DIR`, `KEEP_LOCAL` (3), `KEEP_REMOTE_DAYS` (14).
